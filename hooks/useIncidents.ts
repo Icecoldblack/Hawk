@@ -53,6 +53,20 @@ export function useIncidents(onNew?: (incident: Incident) => void) {
     [refresh],
   );
 
+  const dismiss = useCallback(
+    async (id: string) => {
+      setIncidents((list) => list.map((i) => (i.id === id ? { ...i, status: "dismissed" } : i)));
+      try {
+        const res = await fetch(`/api/incidents/${id}/dismiss`, { method: "POST" });
+        if (!res.ok) throw new Error();
+      } catch {
+        setError("Could not dismiss. Check the connection.");
+        void refresh();
+      }
+    },
+    [refresh],
+  );
+
   const addDispatch = useCallback(
     async (id: string, service: ServiceType) => {
       try {
@@ -76,5 +90,5 @@ export function useIncidents(onNew?: (incident: Incident) => void) {
     void refresh();
   }, [refresh]);
 
-  return { incidents, error, loaded, acknowledge, addDispatch, clearAll, refresh };
+  return { incidents, error, loaded, acknowledge, dismiss, addDispatch, clearAll, refresh };
 }

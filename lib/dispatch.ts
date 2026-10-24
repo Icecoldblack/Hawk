@@ -127,10 +127,11 @@ export function warmDispatchCache(lat: number, lon: number) {
  * real alert is never held up; a slower lookup fills `incident.dispatch` (or the
  * matching `extraDispatches` entry) in later and the dashboard picks it up on its next poll.
  */
-export async function simulateDispatch(incident: Incident, waitMs = 3000, service: ServiceType = SERVICE_FOR[incident.eventType]): Promise<Dispatch> {
-  const extra = service !== SERVICE_FOR[incident.eventType];
+export async function simulateDispatch(incident: Incident, waitMs = 3000, extraService?: ServiceType): Promise<Dispatch> {
+  const service = extraService ?? SERVICE_FOR[incident.eventType];
+  const extra = extraService !== undefined;
   const base = { simulated: true as const, service, ts: Date.now(), station: null };
-  const loc = store.location;
+  const loc = incident.location ?? store.location;
   if (!loc) return { ...base, status: "no_location" };
 
   const result: Promise<Dispatch> = findNearestStations(loc.lat, loc.lon).then(

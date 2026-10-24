@@ -37,7 +37,20 @@ export function acknowledge(id: string): Incident | null {
   const incident = store.incidents.find((i) => i.id === id);
   if (!incident) return null;
   incident.status = "acknowledged";
+  incident.ackTs ??= Date.now();
   return incident;
+}
+
+export function dismiss(id: string): Incident | null {
+  const incident = store.incidents.find((i) => i.id === id);
+  if (!incident) return null;
+  incident.status = "dismissed";
+  incident.ackTs ??= Date.now();
+  return incident;
+}
+
+export function findIncident(id: string): Incident | null {
+  return store.incidents.find((i) => i.id === id) ?? null;
 }
 
 export function clearIncidents() {

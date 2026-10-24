@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { simulateDispatch } from "@/lib/dispatch";
 import { listIncidents } from "@/lib/store";
-import { SERVICE_FOR, type ServiceType } from "@/lib/types";
+import type { ServiceType } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,7 +16,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const incident = listIncidents().find((i) => i.id === id);
   if (!incident) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (service === SERVICE_FOR[incident.eventType] || incident.extraDispatches?.some((d) => d.service === service)) {
+  if (incident.dispatch?.service === service || incident.extraDispatches?.some((d) => d.service === service)) {
     return NextResponse.json({ error: "Already dispatched" }, { status: 409 });
   }
 

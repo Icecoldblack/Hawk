@@ -44,8 +44,15 @@ export type Incident = {
   confidence: number;
   description: string;
   snapshot: string; // data URL of the middle frame
-  status: "open" | "acknowledged";
+  status: "open" | "acknowledged" | "dismissed";
+  /** When a human acknowledged it. For citizen reports this is when responders are confirmed. */
+  ackTs?: number;
   alerted: boolean;
+  /** Where the incident is. Citizen reports carry the reporter's location; camera incidents use the camera's. */
+  location?: { lat: number; lon: number };
+  /** "report" = submitted by a member of the public. Missing means a camera. */
+  source?: "camera" | "report";
+  reporterNote?: string;
   dispatch?: Dispatch;
   /** Extra services a human operator added before acknowledging. */
   extraDispatches?: Dispatch[];
@@ -97,3 +104,8 @@ export const EVENT_LABELS: Record<EventType, string> = {
   person_down: "Person down",
   none: "Clear",
 };
+
+/** Label for an incident; an unclear citizen report still needs a human to look at it. */
+export function incidentLabel(i: Pick<Incident, "eventType" | "source">) {
+  return i.eventType === "none" && i.source === "report" ? "Needs review" : EVENT_LABELS[i.eventType];
+}

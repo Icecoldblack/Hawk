@@ -1,4 +1,4 @@
-import { EVENT_LABELS, SERVICE_LABELS, type Incident } from "./types";
+import { SERVICE_LABELS, incidentLabel, type Incident } from "./types";
 
 function dispatchLine({ dispatch }: Incident): string {
   if (!dispatch) return "";
@@ -32,7 +32,7 @@ export async function sendDiscordAlert(incident: Incident): Promise<boolean> {
   const url = process.env.DISCORD_WEBHOOK_URL;
   if (!url) return false;
 
-  const label = EVENT_LABELS[incident.eventType].toUpperCase();
+  const label = incidentLabel(incident).toUpperCase();
   const image = dataUrlToBlob(incident.snapshot);
   const payload = {
     content: `🚨 ALERT: ${label} (severity ${incident.severity}/5)${incident.test ? " [TEST]" : ""}`,

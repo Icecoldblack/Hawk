@@ -1,8 +1,5 @@
-import type { Metadata } from "next";
-import { MonitorDashboard } from "@/components/monitor/MonitorDashboard";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = { title: "Live monitor · Hawk" };
-
-export default function MonitorPage() {
-  return <MonitorDashboard />;
+export default function MonitorRedirect() {
+  redirect("/admin");
 }
