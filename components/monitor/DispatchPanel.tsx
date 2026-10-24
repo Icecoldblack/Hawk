@@ -59,7 +59,7 @@ export function DispatchPanel({ dispatch, now }: { dispatch: Dispatch | undefine
             : dispatch.status === "no_location"
             ? "Camera location not set. Use the Location button at the top to enable dispatch."
             : dispatch.status === "not_found"
-              ? "No station of this type found within 40 km."
+              ? "No station of this type found within 50 km."
               : "Station lookup failed. Check the server's internet connection."}
         </p>
       )}

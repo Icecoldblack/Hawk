@@ -3,38 +3,12 @@ import { SERVICE_FOR, type Dispatch, type Incident, type ServiceType, type Stati
 
 /**
  * Simulated emergency dispatch. Finds the nearest real station of the right
- * kind from OpenStreetMap and records it on the incident. It never calls,
+ * kind from Google Places and records it on the incident. It never calls,
  * messages or otherwise contacts the station.
  */
 
-const OVERPASS_URLS = (process.env.OVERPASS_URL || "https://overpass-api.de/api/interpreter,https://overpass.kumi.systems/api/interpreter")
-  .split(",")
-  .map((u) => u.trim())
-  .filter(Boolean);
-const USER_AGENT = "Hawk-demo/0.1 (hackathon MVP; simulated dispatch only)";
 const CACHE_MS = 60 * 60 * 1000;
 const SERVICES = ["ambulance", "police", "fire"] as const;
-
-// OSM tags for each service. Hospitals only count when they have an emergency department.
-const FILTERS: Record<ServiceType, string[]> = {
-  ambulance: ['nwr["emergency"="ambulance_station"]', 'nwr["amenity"="hospital"]["emergency"!="no"]'],
-  police: ['nwr["amenity"="police"]'],
-  fire: ['nwr["amenity"="fire_station"]'],
-};
-
-function classify(tags: Record<string, string>): ServiceType | null {
-  if (tags.amenity === "fire_station") return "fire";
-  if (tags.amenity === "police") return "police";
-  if (tags.emergency === "ambulance_station" || tags.amenity === "hospital") return "ambulance";
-  return null;
-}
-
-type OverpassElement = {
-  lat?: number;
-  lon?: number;
-  center?: { lat: number; lon: number };
-  tags?: Record<string, string>;
-};
 
 type Nearest = Record<ServiceType, Station | null>;
 
@@ -58,65 +32,65 @@ function estimateEta(distanceKm: number) {
   return Math.max(3, Math.round(2 + ((distanceKm * 1.35) / 45) * 60));
 }
 
-function formatAddress(tags: Record<string, string>) {
-  const street = [tags["addr:housenumber"], tags["addr:street"]].filter(Boolean).join(" ");
-  const parts = [street, tags["addr:city"]].filter(Boolean);
-  return parts.length ? parts.join(", ") : null;
+const GOOGLE_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+const GOOGLE_TYPES: Record<ServiceType, string[]> = {
+  ambulance: ["hospital"],
+  police: ["police"],
+  fire: ["fire_station"],
+};
+
+type GooglePlace = {
+  displayName?: { text: string };
+  formattedAddress?: string;
+  nationalPhoneNumber?: string;
+  internationalPhoneNumber?: string;
+  location?: { latitude: number; longitude: number };
+  googleMapsUri?: string;
+};
+
+/** Nearest place of one service type via Google Places (New), ranked by distance. */
+async function googleNearest(lat: number, lon: number, service: ServiceType): Promise<Station | null> {
+  const res = await fetch("https://places.googleapis.com/v1/places:searchNearby", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Goog-Api-Key": GOOGLE_KEY!,
+      "X-Goog-FieldMask":
+        "places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.internationalPhoneNumber,places.location,places.googleMapsUri",
+    },
+    body: JSON.stringify({
+      includedTypes: GOOGLE_TYPES[service],
+      maxResultCount: 1,
+      rankPreference: "DISTANCE",
+      locationRestriction: { circle: { center: { latitude: lat, longitude: lon }, radius: 50_000 } },
+    }),
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!res.ok) throw new Error(`Google Places ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const place = ((await res.json()) as { places?: GooglePlace[] }).places?.[0];
+  if (!place?.location || !place.displayName) return null;
+  const { latitude, longitude } = place.location;
+  const distanceKm = haversineKm(lat, lon, latitude, longitude);
+  return {
+    name: place.displayName.text,
+    address: place.formattedAddress ?? null,
+    phone: place.nationalPhoneNumber ?? place.internationalPhoneNumber ?? null,
+    lat: latitude,
+    lon: longitude,
+    distanceKm: Math.round(distanceKm * 10) / 10,
+    etaMin: estimateEta(distanceKm),
+    mapUrl: place.googleMapsUri ?? `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`,
+  };
 }
 
-/** One Overpass request covering several services; tries each mirror in turn. */
-async function queryOverpass(lat: number, lon: number, services: readonly ServiceType[], radiusM: number) {
-  const clauses = services.flatMap((s) => FILTERS[s]).map((f) => `${f}(around:${radiusM},${lat},${lon});`);
-  const query = `[out:json][timeout:55];(${clauses.join("")});out center tags 300;`;
-  let lastError: unknown;
-  for (const url of OVERPASS_URLS) {
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded", "User-Agent": USER_AGENT },
-        body: new URLSearchParams({ data: query }),
-        // The public Overpass servers can take 30s+ when busy.
-        signal: AbortSignal.timeout(60_000),
-      });
-      if (!res.ok) throw new Error(`Overpass ${res.status} from ${new URL(url).host}`);
-      return ((await res.json()) as { elements: OverpassElement[] }).elements;
-    } catch (err) {
-      lastError = err;
-    }
-  }
-  throw lastError;
-}
-
-function pickNearest(lat: number, lon: number, elements: OverpassElement[], into: Nearest) {
-  for (const el of elements) {
-    const eLat = el.lat ?? el.center?.lat;
-    const eLon = el.lon ?? el.center?.lon;
-    const tags = el.tags ?? {};
-    const service = classify(tags);
-    if (eLat == null || eLon == null || !tags.name || !service) continue;
-    const distanceKm = haversineKm(lat, lon, eLat, eLon);
-    const best = into[service];
-    if (best && distanceKm >= best.distanceKm) continue;
-    into[service] = {
-      name: tags.name,
-      address: formatAddress(tags),
-      phone: tags.phone || tags["contact:phone"] || null,
-      lat: eLat,
-      lon: eLon,
-      distanceKm: Math.round(distanceKm * 10) / 10,
-      etaMin: estimateEta(distanceKm),
-      mapUrl: `https://www.openstreetmap.org/?mlat=${eLat}&mlon=${eLon}#map=16/${eLat}/${eLon}`,
-    };
-  }
+async function lookupGoogle(lat: number, lon: number): Promise<Nearest> {
+  const found = await Promise.all(SERVICES.map((s) => googleNearest(lat, lon, s)));
+  return { ambulance: found[0], police: found[1], fire: found[2] };
 }
 
 async function lookup(lat: number, lon: number): Promise<Nearest> {
-  const nearest: Nearest = { ambulance: null, police: null, fire: null };
-  pickNearest(lat, lon, await queryOverpass(lat, lon, SERVICES, 8_000), nearest);
-  // Rural areas: widen the search only for services still missing.
-  const missing = SERVICES.filter((s) => !nearest[s]);
-  if (missing.length) pickNearest(lat, lon, await queryOverpass(lat, lon, missing, 50_000), nearest);
-  return nearest;
+  if (!GOOGLE_KEY) throw new Error("NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is not set");
+  return lookupGoogle(lat, lon);
 }
 
 /** Nearest station of every type. Cached for an hour; concurrent callers share one request. */

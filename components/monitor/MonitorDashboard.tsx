@@ -23,6 +23,7 @@ import { useMonitor } from "@/hooks/useMonitor";
 import { playAlarm, unlockAudio } from "@/lib/sound";
 import type { AppConfig } from "@/lib/types";
 import { IncidentCard } from "./IncidentCard";
+import { StationMap } from "./StationMap";
 import { StatusPill, type MonitorStatus } from "./StatusPill";
 
 type Source = "webcam" | "clip1" | "clip2" | "clip3" | "upload";
@@ -385,6 +386,11 @@ export function MonitorDashboard() {
               </p>
             )}
           </div>
+
+          <StationMap
+            location={locationState.status === "set" ? locationState.location : null}
+            stations={locationState.status === "set" ? locationState.stations : null}
+          />
         </section>
 
         {/* Right: timeline */}
