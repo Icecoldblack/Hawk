@@ -564,7 +564,7 @@ export function TrafficMonitor() {
                   </span>
                   <p className="mt-4 font-semibold">All clear</p>
                   <p className="mt-1 text-sm text-muted">
-                    Confirmed incidents appear here, newest first. Use “Send test alert” to check your phone setup.
+                    Confirmed incidents appear here, newest first. Use “Send test alert” to try it out.
                   </p>
                 </div>
               </div>

@@ -1,61 +1,90 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  BellRinging,
   Brain,
+  CarProfile,
   CheckCircle,
   Eye,
   EyeSlash,
-  HandPalm,
+  Fire,
+  HandFist,
+  Heartbeat,
+  LockKey,
+  PersonArmsSpread,
+  PersonSimple,
   Pulse,
-  ShieldCheck,
+  Siren,
   Timer,
   UserFocus,
   VideoCamera,
 } from "@phosphor-icons/react/dist/ssr";
-import { EventIcon } from "@/components/EventIcon";
 import { HeroFeed } from "@/components/landing/HeroFeed";
 import { Logo } from "@/components/Logo";
-import type { EventType } from "@/lib/types";
 
 const STEPS = [
   {
+    icon: UserFocus,
+    title: "Human in the loop",
+    body: "Alerts never send calls: a confirmed incident lands on the dashboard with a snapshot, and nothing reaches emergency services until a person approves it.",
+    tag: "Every alert",
+  },
+  {
+    icon: VideoCamera,
+    title: "Federated per camera",
+    body: "A model watches each live feed where it sits. Frames are analyzed in place and discarded: video only leaves a camera when an incident is confirmed.",
+    tag: "4,300+ GA feeds",
+  },
+  {
     icon: Pulse,
     title: "Motion gate",
-    body: "Your browser compares frames every 500ms and only wakes the AI when something moves, plus a check every 6 seconds to catch someone lying still.",
-    tag: "Client side · free",
+    body: "Every feed is scored frame by frame and the vision model wakes only when something moves, plus a heartbeat check every 6s to catch someone lying still.",
+    tag: "Runs constantly · free",
   },
   {
     icon: Brain,
-    title: "Vision model",
-    body: "Three consecutive frames go to a multimodal model that reads the change across them: a fall, not someone sitting down.",
-    tag: "~3s per check",
+    title: "2 of 3 threshold",
+    body: "Three consecutive frames are read as change over time: a crash, not a lane change. An incident fires only when 2 of 3 checks agree at 60%+ confidence.",
+    tag: "Cuts false alarms",
+  },
+];
+
+const WATCHES = [
+  { icon: CarProfile, title: "Car crashes", body: "The big one for highway cams: collisions, spin-outs, vehicles stopped mid-lane." },
+  { icon: PersonArmsSpread, title: "Falls", body: "A person going down suddenly, caught across consecutive frames.", iconTilt: true },
+  { icon: Heartbeat, title: "Seizures & medical events", body: "Someone convulsing, collapsing, or clutching their chest." },
+  { icon: HandFist, title: "Fights & assault", body: "People physically attacking each other, not playing or exercising." },
+  { icon: Siren, title: "Violent crime", body: "Severe assaults and attacks in progress on public feeds." },
+  { icon: PersonSimple, title: "Person down", body: "Someone on the ground who has stopped moving. The heartbeat check catches stillness.", iconTilt: true },
+  { icon: Fire, title: "Fire & smoke", body: "Visible flames or smoke in frame, from a vehicle fire to a burning bin." },
+];
+
+const GUARDRAILS = [
+  {
+    icon: EyeSlash,
+    title: "Nothing is recorded",
+    body: "Frames are analyzed and discarded on the spot. Only the snapshot of a confirmed incident is kept, for incident tracking.",
+  },
+  {
+    icon: UserFocus,
+    title: "Human in the loop",
+    body: "Every alert waits for a person. No notification reaches emergency services without a human approving it first.",
   },
   {
     icon: CheckCircle,
-    title: "2 of 3 confirmation",
-    body: "An incident fires only when 2 of the last 3 checks agree with at least 60% average confidence. One odd frame never pages anyone.",
-    tag: "Cuts false alarms",
+    title: "Confidence is auditable",
+    body: "Every check publishes its verdict, vote count and confidence on the dashboard. The 2-of-3, 60%+ threshold is what makes that confidence mean something.",
   },
   {
-    icon: BellRinging,
-    title: "Instant alert",
-    body: "The confirmed incident hits the dashboard and is routed (simulated) to the nearest real ambulance, police or fire station.",
-    tag: "< 6s end to end",
+    icon: Timer,
+    title: "One alert per event",
+    body: "A 60 second cooldown per camera stops the same incident from paging you every 2 seconds.",
   },
-];
-
-const EVENTS: { type: EventType; title: string; body: string; sev: string }[] = [
-  { type: "fall", title: "Falls", body: "A person going down suddenly, caught across consecutive frames.", sev: "Severity 3 to 5" },
-  { type: "fight", title: "Fights", body: "People physically attacking each other, not playing or exercising.", sev: "Severity 3 to 5" },
-  { type: "fire_smoke", title: "Fire & smoke", body: "Visible flames or smoke in frame, from a pan fire to a burning bin.", sev: "Severity 4 to 5" },
-  { type: "person_down", title: "Person down", body: "Someone on the floor who has stopped moving. The heartbeat check catches stillness.", sev: "Severity 4 to 5" },
 ];
 
 const STATS = [
-  { value: "<6s", label: "fall to alert" },
+  { value: "4,300+", label: "live cameras statewide" },
+  { value: "24/7", label: "autonomous watch" },
   { value: "2/3", label: "checks must agree" },
-  { value: "60s", label: "cooldown per event" },
   { value: "0", label: "raw frames stored" },
 ];
 
@@ -68,8 +97,8 @@ export default function Home() {
           <Logo />
           <div className="hidden items-center gap-8 text-sm text-muted md:flex">
             <a href="#how" className="transition-colors hover:text-fg">How it works</a>
-            <a href="#detects" className="transition-colors hover:text-fg">What it detects</a>
-            <a href="#privacy" className="transition-colors hover:text-fg">Privacy</a>
+            <a href="#watches" className="transition-colors hover:text-fg">What it watches</a>
+            <a href="#guardrails" className="transition-colors hover:text-fg">Guardrails</a>
           </div>
           <div className="flex items-center gap-3">
             <Link
@@ -96,11 +125,11 @@ export default function Home() {
           <div className="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black_30%,transparent_75%)]" />
           <div className="absolute left-1/2 top-0 h-[480px] w-[900px] -translate-x-1/2 rounded-full bg-red/10 blur-[120px]" />
 
-          <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-4 pb-28 pt-16 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:pt-24">
+          <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-4 pb-20 pt-16 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:pt-20">
             <div className="animate-rise">
               <p className="inline-flex items-center gap-2 rounded-full border border-red/40 bg-red/10 px-3 py-1 font-mono text-xs uppercase tracking-widest text-red-bright">
                 <span className="h-1.5 w-1.5 rounded-full bg-red-bright animate-blink" />
-                Live AI emergency detection
+                Autonomous emergency detection
               </p>
               <h1 className="mt-6 font-display text-5xl font-bold leading-[1.02] tracking-tight text-balance sm:text-6xl lg:text-7xl">
                 Cameras record.
@@ -108,16 +137,16 @@ export default function Home() {
                 <span className="text-red-bright text-glow">Raven responds.</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
-                Point any camera at a room. Within seconds of a fall, a fight, fire, or someone lying motionless, a confirmed
-                incident lights up your dashboard and buzzes your phone.
+                4,300+ live traffic cameras across Georgia, with an AI watching 24/7 for crashes, assaults and
+                medical emergencies.
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-3">
                 <Link
-                  href="/report"
+                  href="/traffic"
                   className="group inline-flex h-12 items-center gap-2 rounded-lg bg-red px-6 font-semibold text-white shadow-[0_0_40px_-8px_var(--red)] transition-colors hover:bg-red-bright"
                 >
                   <Eye size={18} weight="bold" aria-hidden />
-                  Report an emergency
+                  Watch a live feed
                   <ArrowRight size={16} weight="bold" className="transition-transform group-hover:translate-x-0.5" aria-hidden />
                 </Link>
                 <a
@@ -128,155 +157,115 @@ export default function Home() {
                 </a>
               </div>
 
-              <dl className="mt-14 grid max-w-xl grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-4">
-                {STATS.map((s) => (
-                  <div key={s.label} className="bg-surface px-4 py-4">
-                    <dt className="sr-only">{s.label}</dt>
-                    <dd className="font-display text-2xl font-bold tabular-nums">{s.value}</dd>
-                    <dd className="mt-1 text-xs leading-snug text-faint">{s.label}</dd>
-                  </div>
-                ))}
-              </dl>
+              <div className="relative mt-12 overflow-hidden rounded-2xl border border-red/40 bg-[linear-gradient(135deg,#3a0503_0%,#120303_45%,#050505_100%)]">
+                <div className="bg-grid absolute inset-0 opacity-60 [mask-image:linear-gradient(90deg,transparent,black)]" aria-hidden />
+                <div className="relative px-5 py-5 sm:px-6">
+                  <p className="text-sm text-muted">Pick any GDOT feed in the state and detection runs on real traffic, right now.</p>
+                  <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-4">
+                    {STATS.map((s) => (
+                      <div key={s.label} className="bg-black/40 px-4 py-3.5">
+                        <dt className="sr-only">{s.label}</dt>
+                        <dd className="font-display text-2xl font-bold tabular-nums">{s.value}</dd>
+                        <dd className="mt-1 text-xs leading-snug text-white/50">{s.label}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              </div>
             </div>
 
             <HeroFeed />
           </div>
         </section>
 
-        {/* Problem */}
-        <section className="border-y border-line bg-surface">
-          <div className="mx-auto max-w-5xl px-4 py-20 text-center sm:px-6">
-            <p className="font-mono text-xs uppercase tracking-[0.25em] text-red-bright">The problem</p>
-            <p className="mt-5 font-display text-3xl font-semibold leading-tight tracking-tight text-balance sm:text-4xl">
-              Most cameras are never watched live. Falls and attacks are found{" "}
-              <span className="text-muted">after the fact</span>, when minutes already mattered.
-            </p>
-          </div>
-        </section>
-
-        {/* How it works */}
-        <section id="how" className="mx-auto max-w-7xl scroll-mt-20 px-4 py-24 sm:px-6">
+        {/* How it works: pipeline, watch list, guardrails in one section */}
+        <section id="how" className="mx-auto max-w-7xl scroll-mt-20 border-t border-line px-4 py-20 sm:px-6">
           <div className="max-w-2xl">
             <p className="font-mono text-xs uppercase tracking-[0.25em] text-red-bright">How it works</p>
-            <h2 className="mt-4 font-display text-4xl font-bold tracking-tight">Four stages, one alert you can trust.</h2>
+            <h2 className="mt-4 font-display text-4xl font-bold tracking-tight">
+              Live feeds across Georgia. Emergencies flagged, not recorded.
+            </h2>
             <p className="mt-4 text-muted">
-              Each stage filters the one before it, so the model only sees frames that matter and your phone only rings for
-              events that held up across multiple checks.
+              A federated model rides on each camera, so raw video never leaves the feed. It watches for
+              life-threatening events frame by frame, and a person approves every alert.
             </p>
           </div>
 
-          <ol className="relative mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <div className="absolute left-0 right-0 top-[38px] hidden h-px bg-gradient-to-r from-red/0 via-red/60 to-red/0 lg:block" aria-hidden />
+          <ol className="mt-10 divide-y divide-line border-y border-line">
             {STEPS.map((s, i) => (
-              <li
-                key={s.title}
-                className="group relative rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-red/50"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="relative grid h-12 w-12 place-items-center rounded-xl border border-red/40 bg-bg text-red-bright">
-                    <s.icon size={22} weight="bold" aria-hidden />
-                  </span>
-                  <span className="font-mono text-4xl font-bold text-white/5 transition-colors group-hover:text-red/20">0{i + 1}</span>
+              <li key={s.title} className="flex items-center gap-4 py-3.5">
+                <span className="w-8 shrink-0 font-mono text-sm font-bold tabular-nums text-faint">0{i + 1}</span>
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-red/40 bg-bg text-red-bright">
+                  <s.icon size={18} weight="bold" aria-hidden />
+                </span>
+                <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3">
+                  <h3 className="shrink-0 font-semibold">{s.title}</h3>
+                  <p className="min-w-0 text-sm text-muted">{s.body}</p>
                 </div>
-                <h3 className="mt-6 font-display text-xl font-semibold">{s.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{s.body}</p>
-                <p className="mt-5 inline-block rounded-md bg-white/5 px-2 py-1 font-mono text-[11px] uppercase tracking-wider text-faint">{s.tag}</p>
+                <span className="hidden shrink-0 rounded-md bg-white/5 px-2 py-1 font-mono text-[11px] uppercase tracking-wider text-faint sm:inline-block">
+                  {s.tag}
+                </span>
               </li>
             ))}
           </ol>
-        </section>
 
-        {/* Detects */}
-        <section id="detects" className="scroll-mt-20 border-t border-line bg-[linear-gradient(180deg,var(--surface)_0%,var(--bg)_100%)]">
-          <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <div className="max-w-2xl">
-                <p className="font-mono text-xs uppercase tracking-[0.25em] text-red-bright">What it detects</p>
-                <h2 className="mt-4 font-display text-4xl font-bold tracking-tight">Reads context, not just pixels.</h2>
-              </div>
-              <p className="max-w-sm text-sm text-muted">
-                Sitting, bending to tie a shoe, waving, exercising and playing are all classed as normal. When the model is not
-                clearly sure, it says nothing.
+          {/* Watch list + guardrails: compact lists, one row each */}
+          <div className="mt-14 grid gap-10 lg:grid-cols-2">
+            <div id="watches" className="scroll-mt-24">
+              <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-red-bright">What it watches for</h3>
+              <ul className="mt-6 divide-y divide-line border-y border-line">
+                {WATCHES.map((w) => (
+                  <li key={w.title} className="flex items-center gap-4 py-3.5">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-red text-white">
+                      <w.icon
+                        size={18}
+                        weight="bold"
+                        aria-hidden
+                        style={w.iconTilt ? { transform: `rotate(${w.title === "Falls" ? "-38deg" : "90deg"})` } : undefined}
+                      />
+                    </span>
+                    <div className="flex min-w-0 flex-wrap items-baseline gap-x-3">
+                      <h4 className="shrink-0 font-semibold">{w.title}</h4>
+                      <p className="min-w-0 text-sm text-muted">{w.body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-sm text-muted">
+                Same pipeline runs anywhere: baby monitors, senior-care and elder cameras, and business security feeds
+                that no guard can all watch at once.
               </p>
             </div>
 
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {EVENTS.map((e) => (
-                <article
-                  key={e.type}
-                  className="relative overflow-hidden rounded-2xl border border-line bg-surface-2 p-6 transition-transform duration-300 hover:-translate-y-1"
-                >
-                  <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-red/10 blur-2xl" aria-hidden />
-                  <span className="grid h-12 w-12 place-items-center rounded-xl bg-red text-white">
-                    <EventIcon type={e.type} size={24} />
-                  </span>
-                  <h3 className="mt-6 font-display text-xl font-semibold">{e.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted">{e.body}</p>
-                  <p className="mt-5 font-mono text-[11px] uppercase tracking-wider text-red-bright">{e.sev}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Privacy */}
-        <section id="privacy" className="mx-auto max-w-7xl scroll-mt-20 px-4 py-24 sm:px-6">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.25em] text-red-bright">Responsible by design</p>
-              <h2 className="mt-4 font-display text-4xl font-bold tracking-tight">Watches without hoarding.</h2>
-              <p className="mt-4 max-w-lg text-muted">
-                Raven is built to help people, not to build a surveillance archive. Humans stay in the loop for every
-                incident.
+            <div id="guardrails" className="scroll-mt-24">
+              <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-red-bright">Guardrails</h3>
+              <ul className="mt-6 divide-y divide-line border-y border-line">
+                {GUARDRAILS.map((g) => (
+                  <li key={g.title} className="flex items-center gap-4 py-3.5">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line-strong text-red-bright">
+                      <g.icon size={18} weight="bold" aria-hidden />
+                    </span>
+                    <div className="flex min-w-0 flex-wrap items-baseline gap-x-3">
+                      <h4 className="shrink-0 font-semibold">{g.title}</h4>
+                      <p className="min-w-0 text-sm text-muted">{g.body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 flex items-start gap-2 text-sm text-muted">
+                <LockKey size={16} weight="bold" className="mt-0.5 shrink-0 text-sev-low" aria-hidden />
+                Built to help people, not to build a surveillance archive.
               </p>
             </div>
-            <ul className="grid gap-3">
-              {[
-                { icon: EyeSlash, title: "Frames are analyzed and discarded", body: "Nothing is recorded. Only the snapshot of a flagged incident is kept." },
-                { icon: UserFocus, title: "Humans acknowledge every incident", body: "Alerts stay open and pulsing until a person reviews and acknowledges them." },
-                { icon: ShieldCheck, title: "Confidence shown openly", body: "Every verdict, vote and confidence score is visible on the dashboard." },
-                { icon: Timer, title: "One alert per event", body: "A 60 second cooldown stops the same incident from paging you every 2 seconds." },
-              ].map((p) => (
-                <li key={p.title} className="flex gap-4 rounded-xl border border-line bg-surface p-5">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-line-strong text-red-bright">
-                    <p.icon size={20} weight="bold" aria-hidden />
-                  </span>
-                  <div>
-                    <h3 className="font-semibold">{p.title}</h3>
-                    <p className="mt-1 text-sm text-muted">{p.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="px-4 pb-24 sm:px-6">
-          <div className="relative mx-auto max-w-7xl overflow-hidden rounded-3xl border border-red/40 bg-[linear-gradient(135deg,#3a0503_0%,#120303_45%,#050505_100%)] px-6 py-16 sm:px-14">
-            <div className="bg-grid absolute inset-0 opacity-60 [mask-image:linear-gradient(90deg,transparent,black)]" aria-hidden />
-            <div className="relative flex flex-wrap items-center justify-between gap-8">
-              <div className="max-w-xl">
-                <h2 className="font-display text-4xl font-bold tracking-tight">Give your camera a pair of eyes.</h2>
-                <p className="mt-3 text-muted">Send a short video and see which responders are on the way.</p>
-              </div>
-              <Link
-                href="/report"
-                className="group inline-flex h-12 items-center gap-2 rounded-lg bg-red px-6 font-semibold text-white shadow-[0_0_40px_-8px_var(--red)] transition-colors hover:bg-red-bright"
-              >
-                <HandPalm size={18} weight="bold" aria-hidden />
-                Report an emergency
-                <ArrowRight size={16} weight="bold" className="transition-transform group-hover:translate-x-0.5" aria-hidden />
-              </Link>
-            </div>
-          </div>
-        </section>
       </main>
 
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-8 text-sm text-faint sm:px-6">
           <Logo />
-          <p>Built for fast response. Frames analyzed, never stored.</p>
+          <p>Frames analyzed, never stored. Humans approve every alert.</p>
         </div>
       </footer>
     </div>
