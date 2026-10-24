@@ -78,4 +78,4 @@ lib/          Detection (motion, prompt, vision, confirm), dispatch, GDOT 511, i
 
 ## Notes
 
-Incidents are kept in memory (last 50), so they reset when the server restarts. This is a demo, not a production emergency system.
+Incidents are kept in memory (last 50) and mirrored to `.data/incidents.json`, so they survive server restarts and are only removed when an operator clicks Clear. This is a demo, not a production emergency system.
