@@ -40,7 +40,7 @@ const STEPS = [
   {
     icon: BellRinging,
     title: "Instant alert",
-    body: "The confirmed incident hits the dashboard, lands on your phone through Discord, and is routed (simulated) to the nearest real ambulance, police or fire station.",
+    body: "The confirmed incident hits the dashboard and is routed (simulated) to the nearest real ambulance, police or fire station.",
     tag: "< 6s end to end",
   },
 ];
@@ -53,7 +53,7 @@ const EVENTS: { type: EventType; title: string; body: string; sev: string }[] = 
 ];
 
 const STATS = [
-  { value: "<6s", label: "fall to phone alert" },
+  { value: "<6s", label: "fall to alert" },
   { value: "2/3", label: "checks must agree" },
   { value: "60s", label: "cooldown per event" },
   { value: "0", label: "raw frames stored" },

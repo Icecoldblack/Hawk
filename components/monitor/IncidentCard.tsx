@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, CheckCircle, DiscordLogo, Plus, X } from "@phosphor-icons/react";
+import { Check, CheckCircle, Plus, X } from "@phosphor-icons/react";
 import { EventIcon, severityTone } from "@/components/EventIcon";
 import { SERVICE_LABELS, incidentLabel, type Incident, type ServiceType } from "@/lib/types";
 import { DispatchPanel } from "./DispatchPanel";
@@ -71,9 +71,6 @@ export function IncidentCard({
             <time dateTime={new Date(incident.ts).toISOString()}>{new Date(incident.ts).toLocaleTimeString()}</time>
             <span>· {timeAgo(incident.ts, now)}</span>
             <span>· {Math.round(incident.confidence * 100)}% conf</span>
-            <span className={`inline-flex items-center gap-1 ${incident.alerted ? "text-[#8b9bff]" : ""}`}>
-              · <DiscordLogo size={12} weight="fill" aria-hidden /> {incident.alerted ? "sent" : "not sent"}
-            </span>
           </p>
         </div>
       </div>

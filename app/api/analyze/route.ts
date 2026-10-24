@@ -1,6 +1,5 @@
 import { ApiError } from "@google/genai";
 import { NextResponse } from "next/server";
-import { sendDiscordAlert } from "@/lib/alerts";
 import { confirm, tally } from "@/lib/confirm";
 import { simulateDispatch } from "@/lib/dispatch";
 import { addIncident, listIncidents, pushVerdict } from "@/lib/store";
@@ -47,7 +46,6 @@ export async function POST(req: Request) {
     if (incident) {
       addIncident(incident);
       incident.dispatch = await simulateDispatch(incident);
-      incident.alerted = await sendDiscordAlert(incident);
     }
 
     const votes = tally(history);

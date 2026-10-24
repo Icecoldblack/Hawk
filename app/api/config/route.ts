@@ -10,7 +10,6 @@ export async function GET() {
     motionThreshold: Number(process.env.MOTION_THRESHOLD ?? 8),
     minConfidence: MIN_CONFIDENCE,
     visionConfigured: Boolean(process.env.GEMINI_API_KEY),
-    discordConfigured: Boolean(process.env.DISCORD_WEBHOOK_URL),
     model: VISION_MODEL,
   };
   return NextResponse.json(config);

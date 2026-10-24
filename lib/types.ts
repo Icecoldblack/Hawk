@@ -47,7 +47,6 @@ export type Incident = {
   status: "open" | "acknowledged" | "dismissed";
   /** When a human acknowledged it. For citizen reports this is when responders are confirmed. */
   ackTs?: number;
-  alerted: boolean;
   /** Where the incident is. Citizen reports carry the reporter's location; camera incidents use the camera's. */
   location?: { lat: number; lon: number };
   /** "report" = submitted by a member of the public. Missing means a camera. */
@@ -79,7 +78,6 @@ export type AppConfig = {
   motionThreshold: number;
   minConfidence: number;
   visionConfigured: boolean;
-  discordConfigured: boolean;
   model: string;
 };
 

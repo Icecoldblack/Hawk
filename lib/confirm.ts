@@ -55,6 +55,5 @@ export function confirm(
     description: latest.verdict.description,
     snapshot: latest.snapshot,
     status: "open",
-    alerted: false,
   };
 }

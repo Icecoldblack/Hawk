@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { sendDiscordAlert } from "@/lib/alerts";
 import { simulateDispatch } from "@/lib/dispatch";
 import { addIncident } from "@/lib/store";
 import type { Incident, Verdict } from "@/lib/types";
@@ -44,7 +43,6 @@ export async function POST(req: Request) {
     description: verdict.description,
     snapshot: frames[Math.floor(frames.length / 2)],
     status: "open",
-    alerted: false,
     source: "report",
     reporterNote: note || undefined,
     location,
@@ -52,6 +50,5 @@ export async function POST(req: Request) {
   addIncident(incident);
   // Unclear reports get no automatic responder: the operator picks one.
   if (incident.eventType !== "none") incident.dispatch = await simulateDispatch(incident);
-  incident.alerted = await sendDiscordAlert(incident);
   return NextResponse.json({ id: incident.id });
 }

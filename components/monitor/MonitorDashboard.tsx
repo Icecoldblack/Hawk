@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Broadcast,
   Brain,
-  DiscordLogo,
   MapPin,
   PaperPlaneTilt,
   Play,
@@ -201,7 +200,6 @@ export function MonitorDashboard() {
           </div>
           <div className="flex items-center gap-2">
             <SystemChip ok={config?.visionConfigured} icon={<Brain size={14} weight="bold" />} label={config ? config.model : "Vision"} />
-            <SystemChip ok={config?.discordConfigured} icon={<DiscordLogo size={14} weight="fill" />} label="Discord" />
             <LocationChip state={locationState} onLocate={locate} />
             <button
               type="button"

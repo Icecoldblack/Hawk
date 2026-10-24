@@ -71,7 +71,7 @@ export function HeroFeed() {
             <BellRinging size={18} weight="fill" />
           </span>
           <div className="min-w-0">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-faint">Discord · now</p>
+            <p className="text-[11px] font-medium uppercase tracking-wider text-faint">Raven · now</p>
             <p className="mt-0.5 text-sm font-semibold">ALERT: FALL (severity 4/5)</p>
             <p className="mt-0.5 text-xs text-muted">Person fell near the lobby entrance and has not got up.</p>
           </div>

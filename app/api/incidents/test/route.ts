@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { sendDiscordAlert } from "@/lib/alerts";
 import { simulateDispatch } from "@/lib/dispatch";
 import { addIncident } from "@/lib/store";
 import type { Incident } from "@/lib/types";
@@ -20,11 +19,9 @@ export async function POST(req: Request) {
     description: "Test alert from Raven. No real event was detected.",
     snapshot: typeof snapshot === "string" ? snapshot : "",
     status: "open",
-    alerted: false,
     test: true,
   };
   addIncident(incident);
   incident.dispatch = await simulateDispatch(incident);
-  incident.alerted = await sendDiscordAlert(incident);
   return NextResponse.json({ incident });
 }

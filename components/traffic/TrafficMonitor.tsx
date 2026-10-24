@@ -5,7 +5,6 @@ import Hls from "hls.js";
 import {
   Brain,
   Broadcast,
-  DiscordLogo,
   MagnifyingGlass,
   MapPin,
   PaperPlaneTilt,
@@ -297,7 +296,6 @@ export function TrafficMonitor() {
           </div>
           <div className="flex items-center gap-2">
             <SystemChip ok={config?.visionConfigured} icon={<Brain size={14} weight="bold" />} label={config ? config.model : "Vision"} />
-            <SystemChip ok={config?.discordConfigured} icon={<DiscordLogo size={14} weight="fill" />} label="Discord" />
             <span
               className={`inline-flex h-9 max-w-[220px] items-center gap-1.5 rounded-lg border px-2.5 font-mono text-[11px] ${
                 location ? "border-sev-low/30 text-sev-low" : "border-line-strong text-muted"
