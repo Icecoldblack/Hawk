@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Timer,
   UserFocus,
+  VideoCamera,
 } from "@phosphor-icons/react/dist/ssr";
 import { EventIcon } from "@/components/EventIcon";
 import { HeroFeed } from "@/components/landing/HeroFeed";
@@ -70,13 +71,22 @@ export default function Home() {
             <a href="#detects" className="transition-colors hover:text-fg">What it detects</a>
             <a href="#privacy" className="transition-colors hover:text-fg">Privacy</a>
           </div>
-          <Link
-            href="/report"
-            className="group inline-flex h-10 items-center gap-2 rounded-lg bg-red px-4 text-sm font-semibold text-white transition-colors hover:bg-red-bright"
-          >
-            Report an emergency
-            <ArrowRight size={16} weight="bold" className="transition-transform group-hover:translate-x-0.5" aria-hidden />
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/traffic"
+              className="group inline-flex h-10 items-center gap-2 rounded-lg border border-line-strong px-4 text-sm font-semibold text-fg transition-colors hover:border-white/30 hover:bg-white/5"
+            >
+              <VideoCamera size={16} weight="bold" aria-hidden />
+              Live traffic cams
+            </Link>
+            <Link
+              href="/report"
+              className="group inline-flex h-10 items-center gap-2 rounded-lg bg-red px-4 text-sm font-semibold text-white transition-colors hover:bg-red-bright"
+            >
+              Report an emergency
+              <ArrowRight size={16} weight="bold" className="transition-transform group-hover:translate-x-0.5" aria-hidden />
+            </Link>
+          </div>
         </nav>
       </header>
 
