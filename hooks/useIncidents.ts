@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Incident } from "@/lib/types";
+import type { Incident, ServiceType } from "@/lib/types";
 
 const POLL_MS = 2000;
 
@@ -53,11 +53,28 @@ export function useIncidents(onNew?: (incident: Incident) => void) {
     [refresh],
   );
 
+  const addDispatch = useCallback(
+    async (id: string, service: ServiceType) => {
+      try {
+        const res = await fetch(`/api/incidents/${id}/dispatch`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ service }),
+        });
+        if (!res.ok && res.status !== 409) throw new Error();
+      } catch {
+        setError("Could not add responder. Check the connection.");
+      }
+      void refresh();
+    },
+    [refresh],
+  );
+
   const clearAll = useCallback(async () => {
     await fetch("/api/incidents", { method: "DELETE" }).catch(() => null);
     seen.current = new Set();
     void refresh();
   }, [refresh]);
 
-  return { incidents, error, loaded, acknowledge, clearAll, refresh };
+  return { incidents, error, loaded, acknowledge, addDispatch, clearAll, refresh };
 }

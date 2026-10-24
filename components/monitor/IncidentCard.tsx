@@ -1,8 +1,8 @@
 "use client";
 
-import { Check, CheckCircle, DiscordLogo } from "@phosphor-icons/react";
+import { Check, CheckCircle, DiscordLogo, Plus } from "@phosphor-icons/react";
 import { EventIcon, severityTone } from "@/components/EventIcon";
-import { EVENT_LABELS, type Incident } from "@/lib/types";
+import { EVENT_LABELS, SERVICE_FOR, SERVICE_LABELS, type Incident, type ServiceType } from "@/lib/types";
 import { DispatchPanel } from "./DispatchPanel";
 
 function timeAgo(ts: number, now: number) {
@@ -12,9 +12,23 @@ function timeAgo(ts: number, now: number) {
   return m < 60 ? `${m}m ago` : `${Math.round(m / 60)}h ago`;
 }
 
-export function IncidentCard({ incident, now, onAck }: { incident: Incident; now: number; onAck: (id: string) => void }) {
+const ALL_SERVICES: ServiceType[] = ["ambulance", "police", "fire"];
+
+export function IncidentCard({
+  incident,
+  now,
+  onAck,
+  onAddDispatch,
+}: {
+  incident: Incident;
+  now: number;
+  onAck: (id: string) => void;
+  onAddDispatch: (id: string, service: ServiceType) => void;
+}) {
   const open = incident.status === "open";
   const tone = severityTone(incident.severity);
+  const sent = new Set([SERVICE_FOR[incident.eventType], ...(incident.extraDispatches ?? []).map((d) => d.service)]);
+  const addable = ALL_SERVICES.filter((s) => !sent.has(s));
 
   return (
     <article
@@ -61,6 +75,22 @@ export function IncidentCard({ incident, now, onAck }: { incident: Incident; now
       </div>
 
       <DispatchPanel dispatch={incident.dispatch} now={now} />
+      {incident.extraDispatches?.map((d) => <DispatchPanel key={d.service} dispatch={d} now={now} />)}
+      {open && addable.length > 0 && (
+        <div className="mx-3 mb-3 flex flex-wrap items-center gap-2">
+          <span className="font-mono text-[10px] uppercase tracking-wider text-faint">Also send</span>
+          {addable.map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => onAddDispatch(incident.id, s)}
+              className="inline-flex h-7 cursor-pointer items-center gap-1 rounded-md border border-line-strong px-2 text-xs font-medium transition-colors hover:bg-white/5"
+            >
+              <Plus size={12} weight="bold" aria-hidden /> {SERVICE_LABELS[s]}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="border-t border-line px-3 py-2">
         {open ? (

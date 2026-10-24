@@ -57,7 +57,7 @@ export function MonitorDashboard() {
     setFlashKey((k) => k + 1);
   }, []);
 
-  const { incidents, error: pollError, acknowledge, clearAll, refresh } = useIncidents(onNewIncident);
+  const { incidents, error: pollError, acknowledge, addDispatch, clearAll, refresh } = useIncidents(onNewIncident);
   const { state: locationState, locate } = useLocation();
   const monitor = useMonitor(videoRef, {
     enabled: armed && playing,
@@ -431,7 +431,7 @@ export function MonitorDashboard() {
                 </div>
               </div>
             ) : (
-              incidents.map((i) => <IncidentCard key={i.id} incident={i} now={now} onAck={acknowledge} />)
+              incidents.map((i) => <IncidentCard key={i.id} incident={i} now={now} onAck={acknowledge} onAddDispatch={addDispatch} />)
             )}
           </div>
 

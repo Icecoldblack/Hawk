@@ -47,6 +47,8 @@ export type Incident = {
   status: "open" | "acknowledged";
   alerted: boolean;
   dispatch?: Dispatch;
+  /** Extra services a human operator added before acknowledging. */
+  extraDispatches?: Dispatch[];
   test?: boolean;
 };
 

@@ -124,11 +124,11 @@ export function warmDispatchCache(lat: number, lon: number) {
 
 /**
  * Attach a simulated dispatch to the incident. Waits at most `waitMs` so the
- * real alert is never held up; a slower lookup fills `incident.dispatch` in
- * later and the dashboard picks it up on its next poll.
+ * real alert is never held up; a slower lookup fills `incident.dispatch` (or the
+ * matching `extraDispatches` entry) in later and the dashboard picks it up on its next poll.
  */
-export async function simulateDispatch(incident: Incident, waitMs = 3000): Promise<Dispatch> {
-  const service = SERVICE_FOR[incident.eventType];
+export async function simulateDispatch(incident: Incident, waitMs = 3000, service: ServiceType = SERVICE_FOR[incident.eventType]): Promise<Dispatch> {
+  const extra = service !== SERVICE_FOR[incident.eventType];
   const base = { simulated: true as const, service, ts: Date.now(), station: null };
   const loc = store.location;
   if (!loc) return { ...base, status: "no_location" };
@@ -148,7 +148,10 @@ export async function simulateDispatch(incident: Incident, waitMs = 3000): Promi
   if (quick) return quick;
 
   void result.then((d) => {
-    incident.dispatch = d;
+    if (extra) {
+      const i = incident.extraDispatches?.findIndex((x) => x.service === service) ?? -1;
+      if (i >= 0) incident.extraDispatches![i] = d;
+    } else incident.dispatch = d;
   });
   return { ...base, status: "searching" };
 }
