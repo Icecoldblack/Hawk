@@ -1,7 +1,6 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  Brain,
   CarProfile,
   CheckCircle,
   Eye,
@@ -12,6 +11,7 @@ import {
   LockKey,
   PersonArmsSpread,
   PersonSimple,
+  PhoneCall,
   Pulse,
   Siren,
   Timer,
@@ -23,28 +23,28 @@ import { Logo } from "@/components/Logo";
 
 const STEPS = [
   {
-    icon: UserFocus,
-    title: "Human in the loop",
-    body: "Alerts never send calls: a confirmed incident lands on the dashboard with a snapshot, and nothing reaches emergency services until a person approves it.",
-    tag: "Every alert",
-  },
-  {
     icon: VideoCamera,
-    title: "Federated per camera",
-    body: "A model watches each live feed where it sits. Frames are analyzed in place and discarded: video only leaves a camera when an incident is confirmed.",
-    tag: "4,300+ GA feeds",
+    title: "Live sources",
+    body: "Live traffic camera streams from across Georgia, or a user uploads a clip or streams their own camera.",
+    tag: "4,300+ feeds",
   },
   {
     icon: Pulse,
-    title: "Motion gate",
-    body: "Every feed is scored frame by frame and the vision model wakes only when something moves, plus a heartbeat check every 6s to catch someone lying still.",
-    tag: "Runs constantly · free",
+    title: "AI scores every frame",
+    body: "Frame by frame, each feed gets a confidence score. An alert is only raised once it clears the threshold: 2 of 3 checks agreeing at 60%+.",
+    tag: "Confidence gated",
   },
   {
-    icon: Brain,
-    title: "2 of 3 threshold",
-    body: "Three consecutive frames are read as change over time: a crash, not a lane change. An incident fires only when 2 of 3 checks agree at 60%+ confidence.",
-    tag: "Cuts false alarms",
+    icon: UserFocus,
+    title: "Human in the loop",
+    body: "A person reads the alert details and the uploaded snapshot before anything escalates.",
+    tag: "Every alert",
+  },
+  {
+    icon: PhoneCall,
+    title: "One-click dispatch",
+    body: "If it needs emergency services, one click sends the call: an AI agent phones the right service with accurate context on the situation for dispatch.",
+    tag: "Simulated",
   },
 ];
 
@@ -125,7 +125,7 @@ export default function Home() {
           <div className="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black_30%,transparent_75%)]" />
           <div className="absolute left-1/2 top-0 h-[480px] w-[900px] -translate-x-1/2 rounded-full bg-red/10 blur-[120px]" />
 
-          <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-4 pb-20 pt-16 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:pt-20">
+          <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-4 pb-14 pt-8 sm:px-6 sm:pt-10 lg:grid-cols-[1.05fr_1fr] lg:items-start lg:pt-12">
             <div className="animate-rise">
               <p className="inline-flex items-center gap-2 rounded-full border border-red/40 bg-red/10 px-3 py-1 font-mono text-xs uppercase tracking-widest text-red-bright">
                 <span className="h-1.5 w-1.5 rounded-full bg-red-bright animate-blink" />
@@ -180,15 +180,11 @@ export default function Home() {
 
         {/* How it works: pipeline, watch list, guardrails in one section */}
         <section id="how" className="mx-auto max-w-7xl scroll-mt-20 border-t border-line px-4 py-20 sm:px-6">
-          <div className="max-w-2xl">
+          <div>
             <p className="font-mono text-xs uppercase tracking-[0.25em] text-red-bright">How it works</p>
-            <h2 className="mt-4 font-display text-4xl font-bold tracking-tight">
+            <h2 className="mt-4 font-display text-4xl font-bold tracking-tight lg:whitespace-nowrap">
               Live feeds across Georgia. Emergencies flagged, not recorded.
             </h2>
-            <p className="mt-4 text-muted">
-              A federated model rides on each camera, so raw video never leaves the feed. It watches for
-              life-threatening events frame by frame, and a person approves every alert.
-            </p>
           </div>
 
           <ol className="mt-10 divide-y divide-line border-y border-line">

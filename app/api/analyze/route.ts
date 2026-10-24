@@ -14,11 +14,11 @@ function errorMessage(err: unknown): string {
     return "No GEMINI_API_KEY set. Add it to .env.local and restart the dev server.";
   }
   if (err instanceof ApiError) {
-    if (err.status === 400 && /api key/i.test(err.message)) return "Gemini API key is invalid.";
-    if (err.status === 401 || err.status === 403) return "Gemini API key is invalid or lacks access to this model.";
-    if (err.status === 404) return "Gemini model not found. Check GEMINI_MODEL in .env.local.";
-    if (err.status === 429) return "Gemini rate limit or quota hit, retrying.";
-    return `Gemini API error ${err.status}`;
+    if (err.status === 400 && /api key/i.test(err.message)) return "Vision API key is invalid.";
+    if (err.status === 401 || err.status === 403) return "Vision API key is invalid or lacks access to this model.";
+    if (err.status === 404) return "Vision model not found. Check GEMINI_MODEL in .env.local.";
+    if (err.status === 429) return "Vision API rate limit or quota hit, retrying.";
+    return `Vision API error ${err.status}`;
   }
   if (err instanceof Error) return err.message;
   return "Unknown error";

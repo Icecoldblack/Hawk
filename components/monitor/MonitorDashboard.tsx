@@ -199,7 +199,7 @@ export function MonitorDashboard() {
             <span className="hidden font-mono text-xs uppercase tracking-widest text-faint sm:block">Live monitor</span>
           </div>
           <div className="flex items-center gap-2">
-            <SystemChip ok={config?.visionConfigured} icon={<Brain size={14} weight="bold" />} label={config ? config.model : "Vision"} />
+            <SystemChip ok={config?.visionConfigured} icon={<Brain size={14} weight="bold" />} label="Vision" />
             <LocationChip state={locationState} onLocate={locate} />
             <button
               type="button"
@@ -370,7 +370,7 @@ export function MonitorDashboard() {
                 <>
                   <span className={v.eventType === "none" ? "text-sev-low" : "font-bold text-red-bright"}>{v.eventType}</span> sev {v.severity} · conf{" "}
                   {v.confidence.toFixed(2)} · {monitor.lastTrigger}
-                  {monitor.model && monitor.model !== config?.model ? ` · via ${monitor.model}` : ""} · “{v.description}”
+                  {monitor.model && monitor.model !== config?.model ? " · via fallback" : ""} · “{v.description}”
                 </>
               ) : armed ? (
                 "waiting for first check…"

@@ -16,7 +16,7 @@ export async function GET(req: Request) {
       `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}` +
       `&format=json&limit=1&countrycodes=us&viewbox=${GA_VIEWBOX}&bounded=1`;
     const res = await fetch(url, {
-      headers: { "User-Agent": "hawk-demo/0.1 (hackathon; camera picker geocoding)" },
+      headers: { "User-Agent": "raven-app/0.1 (camera picker geocoding)" },
       signal: AbortSignal.timeout(8000),
     });
     const data = (await res.json()) as { display_name: string; lat: string; lon: string }[];

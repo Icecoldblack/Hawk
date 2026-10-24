@@ -295,7 +295,7 @@ export function TrafficMonitor() {
             <span className="hidden font-mono text-xs uppercase tracking-widest text-faint sm:block">GDOT 511 live camera</span>
           </div>
           <div className="flex items-center gap-2">
-            <SystemChip ok={config?.visionConfigured} icon={<Brain size={14} weight="bold" />} label={config ? config.model : "Vision"} />
+            <SystemChip ok={config?.visionConfigured} icon={<Brain size={14} weight="bold" />} label="Vision" />
             <span
               className={`inline-flex h-9 max-w-[220px] items-center gap-1.5 rounded-lg border px-2.5 font-mono text-[11px] ${
                 location ? "border-sev-low/30 text-sev-low" : "border-line-strong text-muted"
@@ -514,7 +514,7 @@ export function TrafficMonitor() {
                 <>
                   <span className={v.eventType === "none" ? "text-sev-low" : "font-bold text-red-bright"}>{v.eventType}</span> sev {v.severity} · conf{" "}
                   {v.confidence.toFixed(2)} · {monitor.lastTrigger}
-                  {monitor.model && monitor.model !== config?.model ? ` · via ${monitor.model}` : ""} · “{v.description}”
+                  {monitor.model && monitor.model !== config?.model ? " · via fallback" : ""} · “{v.description}”
                 </>
               ) : armed ? (
                 "waiting for first check…"
