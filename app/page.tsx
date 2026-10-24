@@ -70,21 +70,13 @@ export default function Home() {
             <a href="#detects" className="transition-colors hover:text-fg">What it detects</a>
             <a href="#privacy" className="transition-colors hover:text-fg">Privacy</a>
           </div>
-          <div className="flex items-center gap-2">
           <Link
             href="/report"
-            className="inline-flex h-10 items-center rounded-lg border border-line-strong px-4 text-sm font-semibold transition-colors hover:bg-white/5"
-          >
-            Report an emergency
-          </Link>
-          <Link
-            href="/admin"
             className="group inline-flex h-10 items-center gap-2 rounded-lg bg-red px-4 text-sm font-semibold text-white transition-colors hover:bg-red-bright"
           >
-            Admin
+            Report an emergency
             <ArrowRight size={16} weight="bold" className="transition-transform group-hover:translate-x-0.5" aria-hidden />
           </Link>
-          </div>
         </nav>
       </header>
 
@@ -111,11 +103,11 @@ export default function Home() {
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-3">
                 <Link
-                  href="/admin"
+                  href="/report"
                   className="group inline-flex h-12 items-center gap-2 rounded-lg bg-red px-6 font-semibold text-white shadow-[0_0_40px_-8px_var(--red)] transition-colors hover:bg-red-bright"
                 >
                   <Eye size={18} weight="bold" aria-hidden />
-                  Start watching
+                  Report an emergency
                   <ArrowRight size={16} weight="bold" className="transition-transform group-hover:translate-x-0.5" aria-hidden />
                 </Link>
                 <a
@@ -256,14 +248,14 @@ export default function Home() {
             <div className="relative flex flex-wrap items-center justify-between gap-8">
               <div className="max-w-xl">
                 <h2 className="font-display text-4xl font-bold tracking-tight">Give your camera a pair of eyes.</h2>
-                <p className="mt-3 text-muted">Use your webcam or a sample clip. Stage a fall and watch the alert land.</p>
+                <p className="mt-3 text-muted">Send a short video and see which responders are on the way.</p>
               </div>
               <Link
-                href="/admin"
+                href="/report"
                 className="group inline-flex h-12 items-center gap-2 rounded-lg bg-red px-6 font-semibold text-white shadow-[0_0_40px_-8px_var(--red)] transition-colors hover:bg-red-bright"
               >
                 <HandPalm size={18} weight="bold" aria-hidden />
-                Open the live monitor
+                Report an emergency
                 <ArrowRight size={16} weight="bold" className="transition-transform group-hover:translate-x-0.5" aria-hidden />
               </Link>
             </div>
