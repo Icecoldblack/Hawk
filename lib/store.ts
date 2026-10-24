@@ -11,8 +11,6 @@ type Store = {
   location: UserLocation | null; // where the camera is, for simulated dispatch
 };
 
-const MAX_INCIDENTS = 50;
-
 // Incidents are mirrored to disk so a server restart never loses a report.
 const DATA_DIR = join(process.cwd(), ".data");
 const DATA_FILE = join(DATA_DIR, "incidents.json");
@@ -20,7 +18,7 @@ const DATA_FILE = join(DATA_DIR, "incidents.json");
 function loadIncidents(): Incident[] {
   try {
     const parsed = JSON.parse(readFileSync(DATA_FILE, "utf8"));
-    return Array.isArray(parsed) ? parsed.slice(0, MAX_INCIDENTS) : [];
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
@@ -62,7 +60,7 @@ export function pushVerdict(cameraId: string, entry: VerdictEntry): VerdictEntry
 
 export function addIncident(incident: Incident) {
   store.incidents.unshift(incident);
-  if (store.incidents.length > MAX_INCIDENTS) store.incidents.length = MAX_INCIDENTS;
+  // No automatic trimming: incidents only go away when an admin clears them.
   saveIncidents();
 }
 
