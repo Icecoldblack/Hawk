@@ -7,9 +7,9 @@ const grotesk = Space_Grotesk({ variable: "--font-grotesk", subsets: ["latin"], 
 const mono = JetBrains_Mono({ variable: "--font-mono-jb", subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: "HawkSight: AI emergency detection for any camera",
+  title: "Hawk: AI emergency detection for any camera",
   description:
-    "HawkSight watches a camera feed, confirms falls, fights, fire and people down, and pushes an alert to your phone in seconds.",
+    "Hawk watches a camera feed, confirms falls, fights, fire and people down, and pushes an alert to your phone in seconds.",
 };
 
 export const viewport: Viewport = {

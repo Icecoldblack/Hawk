@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* HawkSight: black + red, built for a dark control room. */
+/* Hawk: black + red, built for a dark control room. */
 :root {
   color-scheme: dark;
   --bg: #050505;

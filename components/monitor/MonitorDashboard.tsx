@@ -77,7 +77,7 @@ export function MonitorDashboard() {
 
   const openCount = incidents.filter((i) => i.status === "open").length;
   useEffect(() => {
-    document.title = openCount > 0 ? `ALERT (${openCount}) · HawkSight` : "Live monitor · HawkSight";
+    document.title = openCount > 0 ? `ALERT (${openCount}) · Hawk` : "Live monitor · Hawk";
   }, [openCount]);
 
   // Attach the selected source to the video element.

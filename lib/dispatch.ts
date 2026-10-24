@@ -11,7 +11,7 @@ const OVERPASS_URLS = (process.env.OVERPASS_URL || "https://overpass-api.de/api/
   .split(",")
   .map((u) => u.trim())
   .filter(Boolean);
-const USER_AGENT = "HawkSight-demo/0.1 (hackathon MVP; simulated dispatch only)";
+const USER_AGENT = "Hawk-demo/0.1 (hackathon MVP; simulated dispatch only)";
 const CACHE_MS = 60 * 60 * 1000;
 const SERVICES = ["ambulance", "police", "fire"] as const;
 

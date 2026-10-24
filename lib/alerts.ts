@@ -47,7 +47,7 @@ export async function sendDiscordAlert(incident: Incident): Promise<boolean> {
           ...(incident.dispatch ? [{ name: "Dispatch (SIMULATED, nobody was contacted)", value: dispatchLine(incident) }] : []),
         ],
         image: image ? { url: "attachment://snapshot.jpg" } : undefined,
-        footer: { text: `HawkSight · ${new Date(incident.ts).toLocaleTimeString()}` },
+        footer: { text: `Hawk ·${new Date(incident.ts).toLocaleTimeString()}` },
       },
     ],
   };
