@@ -95,7 +95,7 @@ export default function Home() {
               <h1 className="mt-6 font-display text-5xl font-bold leading-[1.02] tracking-tight text-balance sm:text-6xl lg:text-7xl">
                 Cameras record.
                 <br />
-                <span className="text-red-bright text-glow">Hawk responds.</span>
+                <span className="text-red-bright text-glow">Raven responds.</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
                 Point any camera at a room. Within seconds of a fall, a fight, fire, or someone lying motionless, a confirmed
@@ -216,7 +216,7 @@ export default function Home() {
               <p className="font-mono text-xs uppercase tracking-[0.25em] text-red-bright">Responsible by design</p>
               <h2 className="mt-4 font-display text-4xl font-bold tracking-tight">Watches without hoarding.</h2>
               <p className="mt-4 max-w-lg text-muted">
-                Hawk is built to help people, not to build a surveillance archive. Humans stay in the loop for every
+                Raven is built to help people, not to build a surveillance archive. Humans stay in the loop for every
                 incident.
               </p>
             </div>

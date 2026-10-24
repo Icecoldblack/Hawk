@@ -9,7 +9,7 @@ export function LogoMark({ className = "h-7 w-7" }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
       <rect x="1" y="1" width="30" height="30" rx="7" fill="#0c0c0d" stroke="#e10600" strokeWidth="1.5" />
-      {/* Stylized hawk eye: brow stroke over a red iris. */}
+      {/* Stylized raven eye: brow stroke over a red iris. */}
       <path d="M4.5 10.5 C 10 4, 22 4, 27.5 9.5" fill="none" stroke="#f5f5f4" strokeWidth="2.2" strokeLinecap="round" />
       <clipPath id={clipId}>
         <path d={EYE} />
@@ -30,9 +30,9 @@ export function LogoMark({ className = "h-7 w-7" }: { className?: string }) {
 
 export function Logo({ href = "/" }: { href?: string }) {
   return (
-    <Link href={href} className="flex items-center gap-2.5 rounded-md" aria-label="Hawk home">
+    <Link href={href} className="flex items-center gap-2.5 rounded-md" aria-label="Raven home">
       <LogoMark />
-      <span className="font-display text-lg font-bold tracking-tight">Hawk</span>
+      <span className="font-display text-lg font-bold tracking-tight">Raven</span>
     </Link>
   );
 }

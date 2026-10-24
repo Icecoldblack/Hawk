@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Hawk: black + red, built for a dark control room. */
+/* Raven: black + red, built for a dark control room. */
 :root {
   color-scheme: dark;
   --bg: #050505;

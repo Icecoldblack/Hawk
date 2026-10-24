@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     eventType: "fall",
     severity: 4,
     confidence: 0.9,
-    description: "Test alert from Hawk. No real event was detected.",
+    description: "Test alert from Raven. No real event was detected.",
     snapshot: typeof snapshot === "string" ? snapshot : "",
     status: "open",
     alerted: false,
