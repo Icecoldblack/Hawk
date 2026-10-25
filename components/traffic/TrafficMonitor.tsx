@@ -17,6 +17,7 @@ import {
 } from "@phosphor-icons/react";
 import { Logo } from "@/components/Logo";
 import { IncidentCard } from "@/components/monitor/IncidentCard";
+import { CamerasMap } from "./CamerasMap";
 import { RespondersMap } from "./RespondersMap";
 import { StatusPill, type MonitorStatus } from "@/components/monitor/StatusPill";
 import { useIncidents } from "@/hooks/useIncidents";
@@ -48,6 +49,7 @@ type Stations = { ambulance: Station | null; police: Station | null; fire: Stati
 
 export function TrafficMonitor() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const feedRef = useRef<HTMLElement>(null);
   const [playing, setPlaying] = useState(false);
   const [armed, setArmed] = useState(false);
   const [streamError, setStreamError] = useState<string | null>(null);
@@ -326,7 +328,7 @@ export function TrafficMonitor() {
       )}
 
       <main id="main" className="mx-auto grid w-full max-w-[1600px] flex-1 gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1.65fr)_minmax(340px,1fr)]">
-        <section aria-label="Camera feed" className="flex min-w-0 flex-col gap-4">
+        <section ref={feedRef} aria-label="Camera feed" className="flex min-w-0 scroll-mt-16 flex-col gap-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <StatusPill status={status} />
@@ -530,6 +532,15 @@ export function TrafficMonitor() {
           </div>
 
           <RespondersMap location={location} stations={stations} />
+          <CamerasMap
+            cameras={cameras}
+            activeViewId={camera.viewId}
+            onSelect={(c) => {
+              setCamera(c);
+              setPickerOpen(false);
+              feedRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+          />
         </section>
 
         <section aria-label="Incident timeline" className="flex min-h-[420px] min-w-0 flex-col rounded-2xl border border-line bg-surface lg:max-h-[calc(100dvh-7rem)]">

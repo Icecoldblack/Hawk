@@ -1,35 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { GOOGLE_MAPS_BROWSER_KEY, loadGoogleMaps } from "@/lib/googleMaps";
 import type { Station, UserLocation } from "@/lib/types";
 
 type Stations = { ambulance: Station | null; police: Station | null; fire: Station | null };
 
-const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+const KEY = GOOGLE_MAPS_BROWSER_KEY;
 const COLORS = { ambulance: "#ef4444", police: "#3b82f6", fire: "#f59e0b" } as const;
 const LABELS = { ambulance: "Hospital / EMS", police: "Police", fire: "Fire" } as const;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type GMaps = any;
-
-let loader: Promise<GMaps> | null = null;
-function loadMaps(): Promise<GMaps> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const w = window as any;
-  if (w.google?.maps?.Map) return Promise.resolve(w.google.maps);
-  loader ??= new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${KEY}&v=weekly`;
-    s.async = true;
-    s.onload = () => resolve(w.google.maps);
-    s.onerror = () => {
-      loader = null;
-      reject(new Error("Google Maps failed to load"));
-    };
-    document.head.appendChild(s);
-  });
-  return loader;
-}
 
 /** Google Map of the camera location and the nearest hospital, police and fire station. */
 export function StationMap({ location, stations }: { location: UserLocation | null; stations: Stations | null }) {
@@ -40,7 +19,7 @@ export function StationMap({ location, stations }: { location: UserLocation | nu
     if (!KEY || !location || !el.current) return;
     let cancelled = false;
     const node = el.current;
-    loadMaps()
+    loadGoogleMaps()
       .then((maps) => {
         if (cancelled) return;
         const center = { lat: location.lat, lng: location.lon };

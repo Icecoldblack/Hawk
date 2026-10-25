@@ -1,35 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { GOOGLE_MAPS_BROWSER_KEY, loadGoogleMaps, type GoogleMapsApi } from "@/lib/googleMaps";
 import type { Station, UserLocation } from "@/lib/types";
 
 type Stations = { ambulance: Station | null; police: Station | null; fire: Station | null };
 
-const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+const KEY = GOOGLE_MAPS_BROWSER_KEY;
 const COLORS = { ambulance: "#ef4444", police: "#3b82f6", fire: "#f59e0b" } as const;
 const LABELS = { ambulance: "Hospital / EMS", police: "Police", fire: "Fire" } as const;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type GMaps = any;
-
-let loader: Promise<GMaps> | null = null;
-function loadMaps(): Promise<GMaps> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const w = window as any;
-  if (w.google?.maps?.Map) return Promise.resolve(w.google.maps);
-  loader ??= new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${KEY}&v=weekly`;
-    s.async = true;
-    s.onload = () => resolve(w.google.maps);
-    s.onerror = () => {
-      loader = null;
-      reject(new Error("Google Maps failed to load"));
-    };
-    document.head.appendChild(s);
-  });
-  return loader;
-}
 
 /**
  * Nearest-responders map that follows the ACTIVE traffic camera: keeps one map
@@ -37,16 +16,16 @@ function loadMaps(): Promise<GMaps> {
  */
 export function RespondersMap({ location, stations }: { location: UserLocation | null; stations: Stations | null }) {
   const el = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<GMaps | null>(null);
-  const camMarker = useRef<GMaps | null>(null);
-  const stationMarkers = useRef<GMaps[]>([]);
+  const mapRef = useRef<GoogleMapsApi | null>(null);
+  const camMarker = useRef<GoogleMapsApi | null>(null);
+  const stationMarkers = useRef<GoogleMapsApi[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   // Create the map once the div exists and we have a location.
   useEffect(() => {
     if (!KEY || !el.current || !location || mapRef.current) return;
     let cancelled = false;
-    loadMaps()
+    loadGoogleMaps()
       .then((maps) => {
         if (cancelled || mapRef.current) return;
         const center = { lat: location.lat, lng: location.lon };
